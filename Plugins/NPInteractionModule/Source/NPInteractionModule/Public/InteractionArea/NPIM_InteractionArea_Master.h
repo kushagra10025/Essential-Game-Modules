@@ -18,6 +18,12 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Interaction Area|Components")
+	TObjectPtr<USceneComponent> ActorRoot;
 
+	bool bFocused;
+
+public:
+	UFUNCTION(BlueprintCallable, Category="Interaction Area")
+	virtual void ToggleFocus(bool NewFocused);
 };
