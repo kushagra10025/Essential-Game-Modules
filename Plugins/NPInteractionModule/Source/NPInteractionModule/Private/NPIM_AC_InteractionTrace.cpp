@@ -41,11 +41,11 @@ void UNPIM_AC_InteractionTrace::Trace()
 			if(FocusedActor != TraceHitResult.GetActor())
 			{
 				FocusedActor = TraceHitResult.GetActor();
-				TraceInteractionArea(FocusedActor.GetClass() == ANPIM_InteractionArea_Master::StaticClass());
-			}else
-			{
-				TraceInteractionArea(false);
+				TraceInteractionArea(FocusedActor.IsA(ANPIM_InteractionArea_Master::StaticClass()));
 			}
+		}else
+		{
+			TraceInteractionArea(false);
 		}
 	}
 }
