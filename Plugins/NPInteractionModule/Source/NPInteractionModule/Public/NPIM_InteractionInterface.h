@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "NPIM_InteractionInterface.generated.h"
 
+class UWidgetComponent;
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UNPIM_InteractionInterface : public UInterface
@@ -24,4 +26,6 @@ class NPINTERACTIONMODULE_API INPIM_InteractionInterface
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interaction Interface")
 	void Interface_ToggleFocus(bool bFocus);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interaction Interface")
+	UWidgetComponent* Interface_GetInteractionWidgetRef();
 };

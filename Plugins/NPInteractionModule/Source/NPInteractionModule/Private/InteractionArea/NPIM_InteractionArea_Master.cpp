@@ -4,6 +4,7 @@
 #include "InteractionArea/NPIM_InteractionArea_Master.h"
 
 #include "NPIM_InteractionInterface.h"
+#include "Components/WidgetComponent.h"
 
 ANPIM_InteractionArea_Master::ANPIM_InteractionArea_Master()
 {
@@ -34,6 +35,10 @@ void ANPIM_InteractionArea_Master::ToggleFocus(bool NewFocused)
 		if(GetParentActor()->GetClass()->ImplementsInterface(UNPIM_InteractionInterface::StaticClass()))
 		{
 			INPIM_InteractionInterface::Execute_Interface_ToggleFocus(GetParentActor(), bFocused);
+			if(UWidgetComponent* WidgetRef = INPIM_InteractionInterface::Execute_Interface_GetInteractionWidgetRef(GetParentActor()))
+			{
+				WidgetRef->SetHiddenInGame(!bFocused);
+			}
 		}
 	}
 }
