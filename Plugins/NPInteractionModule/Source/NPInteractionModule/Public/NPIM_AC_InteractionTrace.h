@@ -27,13 +27,17 @@ private:
 	bool bTracingInteractionArea;
 	TObjectPtr<ANPIM_InteractionArea_Master> FocusedInteractionArea;
 	TObjectPtr<AActor> FocusedActor;
+	float InteractDuration;
 
 	void Trace();
 	void TraceInteractionArea(bool bTrace);
+	void PerformInteract(const ANPIM_InteractionArea_Master* InteractionArea); // Try to Execute on Server for Multiplayer Ready
 
 public:
 	UFUNCTION(BlueprintCallable, Category="Interaction Trace")
 	void SetupInteractionTrace();
+	UFUNCTION(BlueprintCallable, Category="Interaction Trace")
+	void TryToInteract(bool bIn);
 
 		
 };

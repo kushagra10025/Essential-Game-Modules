@@ -28,4 +28,6 @@ public:
 	void Interface_ToggleFocus(bool bFocus);
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interaction Interface")
 	UWidgetComponent* Interface_GetInteractionWidgetRef();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interaction Interface")
+	void Interface_Interact();
 };

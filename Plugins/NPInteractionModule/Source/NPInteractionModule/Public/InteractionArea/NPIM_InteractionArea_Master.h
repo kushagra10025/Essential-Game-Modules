@@ -21,9 +21,14 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Interaction Area|Components")
 	TObjectPtr<USceneComponent> ActorRoot;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Interaction Area|Parameters")
+	float InteractDuration;
+
 	bool bFocused;
 
 public:
 	UFUNCTION(BlueprintCallable, Category="Interaction Area")
 	virtual void ToggleFocus(bool NewFocused);
+	UFUNCTION(BlueprintPure, Category="Interaction Area")
+	FORCEINLINE float GetInteractDuration() const { return InteractDuration; }
 };

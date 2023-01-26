@@ -3,6 +3,7 @@
 
 #include "NPIM_AC_InteractionTrace.h"
 
+#include "NPIM_InteractionInterface.h"
 #include "InteractionArea/NPIM_InteractionArea_Master.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -76,6 +77,17 @@ void UNPIM_AC_InteractionTrace::TraceInteractionArea(bool bTrace)
 	}
 }
 
+void UNPIM_AC_InteractionTrace::PerformInteract(const ANPIM_InteractionArea_Master* InteractionArea)
+{
+	if(AActor* IAPA = InteractionArea->GetParentActor())
+	{
+		if(IAPA->GetClass()->ImplementsInterface(UNPIM_InteractionInterface::StaticClass()))
+		{
+			INPIM_InteractionInterface::Execute_Interface_Interact(IAPA);
+		}
+	}
+}
+
 void UNPIM_AC_InteractionTrace::SetupInteractionTrace()
 {
 	if(const APawn* PawnOwner = Cast<APawn>(GetOwner()))
@@ -83,6 +95,25 @@ void UNPIM_AC_InteractionTrace::SetupInteractionTrace()
 		if(PawnOwner->IsLocallyControlled())
 		{
 			SetComponentTickEnabled(true);
+		}
+	}
+}
+
+void UNPIM_AC_InteractionTrace::TryToInteract(bool bIn)
+{
+	if(bIn)
+	{
+		if(bTracingInteractionArea)
+		{
+			InteractDuration = FocusedInteractionArea->GetInteractDuration();
+			if(InteractDuration > 0.f)
+			{
+				// Hold to Interact
+			}else
+			{
+				// Instant Interact
+				PerformInteract(FocusedInteractionArea);
+			}
 		}
 	}
 }
