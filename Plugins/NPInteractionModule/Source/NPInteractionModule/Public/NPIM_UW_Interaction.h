@@ -13,5 +13,13 @@ UCLASS()
 class NPINTERACTIONMODULE_API UNPIM_UW_Interaction : public UUserWidget
 {
 	GENERATED_BODY()
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Interaction Widget")
+	bool bTimedInteraction; // USE THIS LATER
+
+public:
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interaction Widget")
+	void SetTimerBarPercent(float Percent);
 	
 };

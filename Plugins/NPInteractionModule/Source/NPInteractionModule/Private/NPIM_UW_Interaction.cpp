@@ -3,3 +3,6 @@
 
 #include "NPIM_UW_Interaction.h"
 
+void UNPIM_UW_Interaction::SetTimerBarPercent_Implementation(float Percent)
+{
+}

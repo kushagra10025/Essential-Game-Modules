@@ -4,11 +4,14 @@
 #include "NPIM_AC_InteractionTrace.h"
 
 #include "NPIM_InteractionInterface.h"
+#include "NPIM_UW_Interaction.h"
+#include "Components/WidgetComponent.h"
 #include "InteractionArea/NPIM_InteractionArea_Master.h"
 #include "Kismet/GameplayStatics.h"
 
 UNPIM_AC_InteractionTrace::UNPIM_AC_InteractionTrace():
-	TraceLength(400.f)
+	TraceLength(400.f),
+	UpdateInteractionInterval(0.01f)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
@@ -73,6 +76,7 @@ void UNPIM_AC_InteractionTrace::TraceInteractionArea(bool bTrace)
 			FocusedInteractionArea->ToggleFocus(false);
 			FocusedActor = nullptr;
 			FocusedInteractionArea = nullptr;
+			StopInteraction();
 		}
 	}
 }
@@ -85,6 +89,37 @@ void UNPIM_AC_InteractionTrace::PerformInteract(const ANPIM_InteractionArea_Mast
 		{
 			INPIM_InteractionInterface::Execute_Interface_Interact(IAPA);
 		}
+	}
+}
+
+void UNPIM_AC_InteractionTrace::UpdateInteractionProgress()
+{
+	InteractionProgress += ((1.0f / InteractDuration) * UpdateInteractionInterval);
+	CurrentInteractionWidgetRef->SetTimerBarPercent(InteractionProgress);
+	if(InteractionProgress >= 1.0f)
+	{
+		StopInteraction();
+		PerformInteract(FocusedInteractionArea);
+		RunEventAfterInteraction();
+	}
+}
+
+void UNPIM_AC_InteractionTrace::StopInteraction()
+{
+	if(InteractionProgress > 0.f)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(TH_TimedInteraction);
+		CurrentInteractionWidgetRef->SetTimerBarPercent(0.f);
+		InteractionProgress = 0.f;
+		CurrentInteractionWidgetRef = nullptr;
+	}
+}
+
+void UNPIM_AC_InteractionTrace::RunEventAfterInteraction()
+{
+	if(const AActor* FIAPA = FocusedInteractionArea->GetParentActor())
+	{
+		// TODO Run Event After Interaction
 	}
 }
 
@@ -109,12 +144,32 @@ void UNPIM_AC_InteractionTrace::TryToInteract(bool bIn)
 			if(InteractDuration > 0.f)
 			{
 				// Hold to Interact
+				if(AActor* FIAPA = FocusedInteractionArea->GetParentActor())
+				{
+					if(FIAPA->GetClass()->ImplementsInterface(UNPIM_InteractionInterface::StaticClass()))
+					{
+						if(const UWidgetComponent* WidgetCompRef = INPIM_InteractionInterface::Execute_Interface_GetInteractionWidgetRef(FIAPA))
+						{
+							CurrentInteractionWidgetRef = Cast<UNPIM_UW_Interaction>(WidgetCompRef->GetWidget());
+							if(CurrentInteractionWidgetRef.IsValid())
+							{
+								FTimerDelegate Delegate;
+								Delegate.BindUFunction(this, "UpdateInteractionProgress");
+								GetWorld()->GetTimerManager().SetTimer(TH_TimedInteraction, Delegate, UpdateInteractionInterval, true);
+							}
+						}
+					}
+				}
 			}else
 			{
 				// Instant Interact
 				PerformInteract(FocusedInteractionArea);
+				RunEventAfterInteraction();
 			}
 		}
+	}else
+	{
+		StopInteraction();
 	}
 }
 
