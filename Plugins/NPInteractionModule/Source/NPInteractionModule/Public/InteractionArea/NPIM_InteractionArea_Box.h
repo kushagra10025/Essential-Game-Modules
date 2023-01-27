@@ -20,7 +20,7 @@ public:
 	ANPIM_InteractionArea_Box();
 	
 protected:
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Interaction Area|Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Interaction Area|Components")
 	TObjectPtr<UBoxComponent> Box;
 	
 };

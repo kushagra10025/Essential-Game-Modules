@@ -3,3 +3,42 @@
 
 #include "InteractionArea/NPIM_InteractionArea_CustomShape.h"
 
+ANPIM_InteractionArea_CustomShape::ANPIM_InteractionArea_CustomShape()
+{
+	Shape = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Shape"));
+	Shape->SetupAttachment(RootComponent);
+	Shape->SetRelativeScale3D(FVector(1.05f, 1.05f, 1.05f));
+	Shape->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	Shape->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+
+	const ConstructorHelpers::FObjectFinder<UMaterialInterface> MaterialRef = ConstructorHelpers::FObjectFinder<UMaterialInterface>(TEXT("/Script/Engine.Material'/NPInteractionModule/Materials/M_CustomShapeOutline.M_CustomShapeOutline'"));
+
+	if(MaterialRef.Object)
+	{
+		CustomShapeOutlineMaterialRef = MaterialRef.Object;
+	}
+}
+
+void ANPIM_InteractionArea_CustomShape::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	if(PropertyChangedEvent.Property)
+	{
+		if(CustomShape && CustomShapeOutlineMaterialRef)
+		{
+			Shape->SetStaticMesh(CustomShape);
+			if(bDevMode)
+			{
+				Shape->SetVisibility(true);
+				for(const FName& MaterialSlotName : Shape->GetMaterialSlotNames())
+				{
+					Shape->SetMaterialByName(MaterialSlotName, CustomShapeOutlineMaterialRef);
+				}
+			}else
+			{
+				Shape->SetVisibility(false);
+			}
+		}
+	}
+}
