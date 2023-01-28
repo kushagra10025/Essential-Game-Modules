@@ -5,6 +5,7 @@
 
 #include "NPIM_InteractionInterface.h"
 #include "NPIM_UW_Interaction.h"
+#include "TimerManager.h"
 #include "Components/WidgetComponent.h"
 #include "InteractionArea/NPIM_InteractionArea_Master.h"
 #include "Kismet/GameplayStatics.h"

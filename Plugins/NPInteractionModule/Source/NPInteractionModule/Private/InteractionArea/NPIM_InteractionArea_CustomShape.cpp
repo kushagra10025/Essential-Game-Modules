@@ -3,6 +3,9 @@
 
 #include "InteractionArea/NPIM_InteractionArea_CustomShape.h"
 
+#include "Components/StaticMeshComponent.h"
+#include "UObject/ConstructorHelpers.h"
+
 ANPIM_InteractionArea_CustomShape::ANPIM_InteractionArea_CustomShape()
 {
 	Shape = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Shape"));
@@ -20,6 +23,7 @@ ANPIM_InteractionArea_CustomShape::ANPIM_InteractionArea_CustomShape()
 	}
 }
 
+#if WITH_EDITOR
 void ANPIM_InteractionArea_CustomShape::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -43,3 +47,4 @@ void ANPIM_InteractionArea_CustomShape::PostEditChangeProperty(FPropertyChangedE
 		}
 	}
 }
+#endif

@@ -18,8 +18,11 @@ class NPINTERACTIONMODULE_API ANPIM_InteractionArea_CustomShape : public ANPIM_I
 
 public:
 	ANPIM_InteractionArea_CustomShape();
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Interaction Area|Components")
 	TObjectPtr<UStaticMeshComponent> Shape;
