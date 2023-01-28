@@ -65,8 +65,22 @@ void UNPIM_AC_InteractionTrace::TraceInteractionArea(bool bTrace)
 		FocusedInteractionArea = Cast<ANPIM_InteractionArea_Master>(FocusedActor);
 		if(FocusedInteractionArea)
 		{
-			FocusedInteractionArea->ToggleFocus(true);
-			bTracingInteractionArea = true;
+			if(FocusedInteractionArea->CanFocus(GetOwner()))
+			{
+				FocusedInteractionArea->ToggleFocus(true);
+				bTracingInteractionArea = true;	
+			}else
+			{
+				// Same as Line 87
+				if(bTracingInteractionArea)
+				{
+					bTracingInteractionArea = false;
+					FocusedInteractionArea->ToggleFocus(false);
+					FocusedActor = nullptr;
+					FocusedInteractionArea = nullptr;
+					StopInteraction();
+				}
+			}
 		}
 	}else
 	{
@@ -123,6 +137,11 @@ void UNPIM_AC_InteractionTrace::RunEventAfterInteraction()
 	}
 }
 
+void UNPIM_AC_InteractionTrace::ResetTrace()
+{
+	FocusedActor = nullptr;
+}
+
 void UNPIM_AC_InteractionTrace::SetupInteractionTrace()
 {
 	if(const APawn* PawnOwner = Cast<APawn>(GetOwner()))
@@ -146,17 +165,14 @@ void UNPIM_AC_InteractionTrace::TryToInteract(bool bIn)
 				// Hold to Interact
 				if(AActor* FIAPA = FocusedInteractionArea->GetParentActor())
 				{
-					if(FIAPA->GetClass()->ImplementsInterface(UNPIM_InteractionInterface::StaticClass()))
+					if(const UWidgetComponent* WidgetCompRef = FocusedInteractionArea->GetInteractionWidgetRef())
 					{
-						if(const UWidgetComponent* WidgetCompRef = INPIM_InteractionInterface::Execute_Interface_GetInteractionWidgetRef(FIAPA))
+						CurrentInteractionWidgetRef = Cast<UNPIM_UW_Interaction>(WidgetCompRef->GetWidget());
+						if(CurrentInteractionWidgetRef.IsValid())
 						{
-							CurrentInteractionWidgetRef = Cast<UNPIM_UW_Interaction>(WidgetCompRef->GetWidget());
-							if(CurrentInteractionWidgetRef.IsValid())
-							{
-								FTimerDelegate Delegate;
-								Delegate.BindUFunction(this, "UpdateInteractionProgress");
-								GetWorld()->GetTimerManager().SetTimer(TH_TimedInteraction, Delegate, UpdateInteractionInterval, true);
-							}
+							FTimerDelegate Delegate;
+							Delegate.BindUFunction(this, "UpdateInteractionProgress");
+							GetWorld()->GetTimerManager().SetTimer(TH_TimedInteraction, Delegate, UpdateInteractionInterval, true);
 						}
 					}
 				}

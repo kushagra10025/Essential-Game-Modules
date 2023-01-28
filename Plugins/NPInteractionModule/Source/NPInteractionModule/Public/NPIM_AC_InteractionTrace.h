@@ -49,5 +49,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Interaction Trace")
 	void TryToInteract(bool bIn);
 
+	void ResetTrace();
 		
 };

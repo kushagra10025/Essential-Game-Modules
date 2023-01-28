@@ -10,6 +10,7 @@ ANPIM_InteractionArea_CustomShape::ANPIM_InteractionArea_CustomShape()
 	Shape->SetRelativeScale3D(FVector(1.05f, 1.05f, 1.05f));
 	Shape->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	Shape->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+	Shape->SetHiddenInGame(true);
 
 	const ConstructorHelpers::FObjectFinder<UMaterialInterface> MaterialRef = ConstructorHelpers::FObjectFinder<UMaterialInterface>(TEXT("/Script/Engine.Material'/NPInteractionModule/Materials/M_CustomShapeOutline.M_CustomShapeOutline'"));
 
